@@ -4,39 +4,31 @@ terraform {
 
 locals {
   defaults = {
-    label_order = ["env", "team", "region", "namespace", "id", "attributes"]
+    delimiter       = "-"
+    id_length_limit = 3
+    label_order     = ["env", "region", "team", "namespace", "id"]
   }
 
+  id_length_limit = var.id_length_limit != null ? var.id_length_limit : var.context != null ? try(var.context.id_length_limit, local.defaults.id_length_limit) : local.defaults.id_length_limit
+  id_full         = join(local.input.delimiter, [for _, label in local.defaults.label_order : lookup(local.input, label) if lookup(local.input, label) != null])
+  id_short        = slice(split(local.input.delimiter, local.id_full), 0, local.id_length_limit)
+
   regions = {
+    global    = "glb"
     us-east-1 = "use1"
     us-east-2 = "use2"
     us-west-1 = "usw1"
     us-west-2 = "usw2"
   }
 
-  context = {
-    attributes = local.attributes
-    env        = local.env
-    id         = local.id
-    namespace  = local.namespace
-    region     = local.region
-    team       = local.team
+  input = {
+    delimiter  = var.delimiter != null ? var.delimiter : try(var.context.delimiter, local.defaults.delimiter)
+    enabled    = var.enabled ? var.enabled : try(var.context.enabled, false)
+    env        = var.env != null ? var.env : try(var.context.env, "")
+    id         = var.id != null ? var.id : try(var.context.id, "")
+    namespace  = var.namespace != null ? var.namespace : try(var.context.namespace, "")
+    region     = var.region != null ? lookup(local.regions, var.region) : try(var.context.region, "")
+    tags       = merge(try(var.context.tags, {}), try(var.tags, {}))
+    team       = var.team != null ? var.team : try(var.context.team, "")
   }
-
-  attributes = var.attributes != null ? join(local.delimiter, compact(distinct(concat(coalesce(var.attributes, []), coalesce(var.context.attributes, []))))) : null
-  delimiter  = var.delimiter != null ? var.delimiter : var.context.delimiter
-  enabled    = var.enabled ? var.enabled : var.context.enabled
-  env        = var.env != null ? var.env : var.context.env
-  id         = var.id != null ? var.id : var.context.id
-  namespace  = var.namespace != null ? var.namespace : var.context.namespace
-  region     = var.region != null  ? local.regions[var.region] : local.regions[var.context.region]
-  team       = var.team != null ? var.team : var.context.team
-
-  id_full    = join(local.delimiter, [ for _, label in local.defaults.label_order : lookup(local.context, label) if lookup(local.context, label) != null ])
-
-  tags = merge(var.tags, var.context.tags, {
-    Environment = title(local.env)
-    Region      = var.region
-    Team        = local.team
-  })
 }
