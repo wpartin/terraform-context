@@ -17,11 +17,11 @@ locals {
 
   input = {
     delimiter  = try(var.context.delimiter, var.delimiter)
-    enabled    = try(var.context.enabled, var.enabled) # Should be enabled implicitly by the main label; should be able to set explicitly to disable
+    enabled    = var.enabled ? var.context.enabled : var.enabled
     env        = try(var.env, var.context.env, "")
     id         = try(var.id, var.context.id, "")
     namespace  = try(var.context.namespace, var.namespace, "")
-    region     = var.region != null ? lookup(local.regions, var.region) : try(var.context.region, "")
+    region     = var.region != null ? lookup(local.regions, var.region) : try(var.context.region, null)
     tags       = merge(try(var.context.tags, {}), try(var.tags, {}))
     team       = try(var.context.team, var.team, "")
   }

@@ -6,35 +6,17 @@ resource "aws_ecs_cluster" "this" {
   tags = module.ecs_cluster_label.context.tags
 }
 
-resource "aws_ecs_service" "this" {
-  count = module.ecs_service_label.context.enabled ? 1 : 0
+module "service" {
+  source = "./modules/ecs-service"
 
-  task_definition = aws_ecs_task_definition.this[count.index].container_definitions
-  name            = module.ecs_service_label.id_full
+  cluster            = aws_ecs_cluster.this[0].name
+  enabled            = module.ecs_service_label.context.enabled
+  enable_autoscaling = true
+  family             = module.ecs_service_label.id
+  name               = module.ecs_service_label.id_full
+  namespace          = module.ecs_service_label.context.namespace
 
-  tags = module.ecs_service_label.context.tags
-}
-
-resource "aws_ecs_task_definition" "this" {
-  count = module.ecs_service_label.context.enabled ? 1 : 0
-
-  container_definitions = jsonencode([
-    {
-      name      = module.ecs_service_label.id
-      image     = "test"
-      cpu       = 10
-      memory    = 512
-      essential = true
-      portMappings = [
-        {
-          containerPort = 80
-          hostPort      = 80
-        }
-      ]
-    }])
-  family = module.ecs_service_label.id
-
-  tags = module.ecs_service_label.context.tags
+  tags    = module.ecs_service_label.context.tags
 }
 
 resource "aws_sqs_queue" "this" {
@@ -47,23 +29,14 @@ resource "aws_sqs_queue" "this" {
   })
 }
 
-resource "aws_appautoscaling_target" "this" {
-  count = module.ecs_service_label.context.enabled ? 1 : 0
-
-  max_capacity       = 2
-  min_capacity       = 1
-  resource_id        = aws_ecs_service.this[count.index].id
-  scalable_dimension = "ecs:ServiceCount"
-  service_namespace  = module.ecs_service_label.context.namespace
-
-  tags = module.ecs_service_label.context.tags
+output "this" {
+  value = module.this
 }
 
-resource "aws_appautoscaling_policy" "this" {
-  count = module.ecs_service_label.context.enabled ? 1 : 0
+output "ecs_cluster_label" {
+  value = module.ecs_cluster_label
+}
 
-  name               = "${module.ecs_service_label.id_full}-scaling-policy"
-  resource_id        = aws_appautoscaling_target.this[count.index].resource_id
-  scalable_dimension = aws_appautoscaling_target.this[count.index].scalable_dimension
-  service_namespace  = aws_appautoscaling_target.this[count.index].service_namespace
+output "ecs_service_label" {
+  value = module.ecs_service_label
 }

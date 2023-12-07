@@ -1,7 +1,6 @@
 module "this" {
   source = "../.."
 
-  enabled   = true
   env       = "sandbox"
   namespace = "ecs"
 
@@ -25,7 +24,6 @@ module "ecs_cluster_label" {
 module "ecs_service_label" {
   source = "../.."
 
-  enabled = false
   id     = "foxtrot"
   region = "us-east-2"
   team   = "butterfly"

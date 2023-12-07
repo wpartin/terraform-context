@@ -1,7 +1,9 @@
 variable "context" {
   description = "A \"context\" object to pass around between modules. The \"this\" module contains the \"root context\" which can be updated by other labels using \"module.this.context\"."
   type        = any
-  default     = null
+  default     = {
+    enabled = true
+  }
 }
 
 variable "delimiter" {
@@ -18,7 +20,7 @@ variable "delimiter" {
 variable "enabled" {
   description = "Enable / Disable the module."
   type        = bool
-  default     = null
+  default     = true
 }
 
 variable "env" {
@@ -36,7 +38,7 @@ variable "id" {
 variable "id_length_limit" {
   description = "The maximum length of an id when combining the appropriate labels."
   type        = number
-  default     = 3
+  default     = 2
 }
 
 variable "label_order" {
