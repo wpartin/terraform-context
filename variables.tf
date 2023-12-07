@@ -1,12 +1,11 @@
 variable "context" {
-  default = null
+  description = "A \"context\" object to pass around between modules. The \"this\" module contains the \"root context\" which can be updated by other labels using \"module.this.context\"."
+  type        = any
+  default     = null
 }
 
 variable "delimiter" {
-  description = <<-EOT
-    The delimiter to use for separating the ID string components.
-    Either - or _
-  EOT
+  description = "The delimiter to use for separating the ID string components. Either - or _"
   type        = string
   default     = "-"
 
@@ -19,7 +18,7 @@ variable "delimiter" {
 variable "enabled" {
   description = "Enable / Disable the module."
   type        = bool
-  default     = false
+  default     = null
 }
 
 variable "env" {
@@ -29,23 +28,33 @@ variable "env" {
 }
 
 variable "id" {
-  type    = string
-  default = null
+  description = "The name for the resource(s)."
+  type        = string
+  default     = null
 }
 
 variable "id_length_limit" {
-  type    = string
-  default = null
+  description = "The maximum length of an id when combining the appropriate labels."
+  type        = number
+  default     = 3
+}
+
+variable "label_order" {
+  description = "The order that the resource labels should be in."
+  type        = list(string)
+  default     = ["env", "region", "team", "namespace", "id"]
 }
 
 variable "namespace" {
-  type    = string
-  default = null
+  description = "The namespace that the resource belongs to. Example: \"ecs\""
+  type        = string
+  default     = null
 }
 
 variable "region" {
-  type    = string
-  default = null
+  description = "The AWS region to deploy the resources into. Valid choices are: \"global, us-east-1, us-east-2, us-west-1, us-west-2.\" Will be modified to a short id for resource names."
+  type        = string
+  default     = null
 
   validation {
     condition = var.region != null ? contains([
@@ -61,11 +70,13 @@ variable "region" {
 }
 
 variable "team" {
-  type    = string
-  default = null
+  description = "The team identifier that the resources are for. Should be a short-hand identifier."
+  type        = string
+  default     = null
 }
 
 variable "tags" {
-  type    = map(string)
-  default = null
+  description = "The tags to apply to the resources. Set global tag values in the \"this\" version of the module, and then pass label specific modifications to \"module.this.context\"."
+  type        = map(string)
+  default     = null
 }
