@@ -13,6 +13,7 @@ module "this" {
     Account     = "QA"
     Cost-Center = "Engineering"
     Domain      = "Containers"
+    Environment = "Sandbox"
     Project     = "Goldenrod"
   }
 }
@@ -74,85 +75,91 @@ resource "aws_sqs_queue" "this" {
 
 ### example of context outputs ###
 ecs_cluster_label = {
-  context = {
-    delimiter = "-"
-    enabled   = true
-    env       = null
-    id        = "cluster"
-    namespace = "ecs"
-    region    = "glb"
-    tags      = {
-        Account     = "QA"
-        Cost-Center = "Engineering"
-        Domain      = "Containers"
-        Project     = "Goldenrod"
+    context = {
+        delimiter = "-"
+        enabled   = true
+        env       = "sandbox"
+        id        = "cluster"
+        namespace = "ecs"
+        region    = "glb"
+        tags      = {
+            Account     = "QA"
+            Cost-Center = "Engineering"
+            Domain      = "Containers"
+            Environment = "Sandbox"
+            Project     = "Goldenrod"
+        }
+        team      = null
     }
-    team      = null
-  }
     enabled = true
     id      = "cluster"
-    id_full = "glb-ecs-cluster"
+    id_full = "sandbox-glb-ecs-cluster"
     region  = "global"
     tags    = {
         Account     = "QA"
         Cost-Center = "Engineering"
         Domain      = "Containers"
+        Environment = "Sandbox"
         Project     = "Goldenrod"
     }
 }
 ecs_service_label = {
-  context = {
-    delimiter = "-"
-    enabled   = true
-    env       = null
-    id        = "foxtrot"
-    namespace = "ecs"
-    region    = "use2"
-    tags      = {
-        Account     = "QA"
-        Cost-Center = "BugsLife"
-        Domain      = "Containers"
-        Project     = "Goldenrod"
+    context = {
+        delimiter = "-"
+        enabled   = true
+        env       = "sandbox"
+        id        = "foxtrot"
+        namespace = "ecs"
+        region    = "use2"
+        tags      = {
+            Account     = "Development"
+            Cost-Center = "BugsLife"
+            Domain      = "Containers"
+            Environment = "Sandbox"
+            Project     = "Goldenrod"
+        }
+        team      = null
     }
-    team      = null
-  }
-  enabled = true
-  id      = "foxtrot"
-  id_full = "use2-ecs-foxtrot"
-  region  = "us-east-2"
-  tags    = {
+    enabled = true
+    id      = "foxtrot"
+    id_full = "sandbox-use2-ecs-foxtrot"
+    region  = "us-east-2"
+    tags    = {
         Account     = "QA"
         Cost-Center = "BugsLife"
         Domain      = "Containers"
+        Environment = "Sandbox"
         Project     = "Goldenrod"
     }
 }
 this = {
-  context = {
-    delimiter = "-"
-    enabled   = true
-    env       = "sandbox"
-    id        = null
-    namespace = "ecs"
-    region    = ""
-    tags      = {
-        Account     = "QA"
+    context = {
+        delimiter = "-"
+        enabled   = true
+        env       = "sandbox"
+        id        = null
+        namespace = "ecs"
+        region    = ""
+        tags      = {
+            Account     = "Development"
+            Cost-Center = "Engineering"
+            Domain      = "Containers"
+            Environment = "Sandbox"
+            Project     = "Goldenrod"
+        }
+        team      = null
+    }
+    enabled = true
+    id      = null
+    id_full = "sandbox-ecs"
+    region  = null
+    tags    = {
+        Account     = "Development"
         Cost-Center = "Engineering"
         Domain      = "Containers"
+        Environment = "Sandbox"
         Project     = "Goldenrod"
     }
-    team      = null
-  }
-  enabled = true
-  id      = null
-  id_full = "sandbox-ecs"
-  region  = null
-  tags    = {
-    Account     = "QA"
-    Cost-Center = "Engineering"
-    Domain      = "Containers"
-    Project     = "Goldenrod"
-  }
 }
 ```
 
@@ -179,7 +186,7 @@ No resources.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_context"></a> [context](#input\_context) | A "context" object to pass around between modules. The "this" module contains the "root context" which can be updated by other labels using "module.this.context". | `any` | <pre>{<br>  "enabled": true<br>}</pre> | no |
+| <a name="input_context"></a> [context](#input\_context) | A "context" object to pass around between modules. The "this" module contains the "root context" which can be updated by other labels using "module.this.context". | `any` | <pre>{<br>  "delimiter": null,<br>  "enabled": true,<br>  "env": null,<br>  "namespace": null,<br>  "team": null<br>}</pre> | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | The delimiter to use for separating the ID string components. Either - or \_ | `string` | `"-"` | no |
 | <a name="input_enabled"></a> [enabled](#input\_enabled) | Enable / Disable the module. | `bool` | `true` | no |
 | <a name="input_env"></a> [env](#input\_env) | The environment identifier. | `string` | `null` | no |
@@ -195,7 +202,7 @@ No resources.
 
 | Name | Description |
 |------|-------------|
-| <a name="output_context"></a> [context](#output\_context) | The output context that can be passed around with other lables. The root context can be accessed with: "module.this.context". |
+| <a name="output_context"></a> [context](#output\_context) | The output context that can be passed around with other labels. The root context can be accessed with: "module.this.context". |
 | <a name="output_enabled"></a> [enabled](#output\_enabled) | Enable / disable labels or the root module as a whole. |
 | <a name="output_id"></a> [id](#output\_id) | The id for the resource(s) as configured by the label. |
 | <a name="output_id_full"></a> [id\_full](#output\_id\_full) | The full id for the resource(s) as configured by the label; includes any labels included in "var.label\_order". |

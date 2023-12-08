@@ -1,5 +1,5 @@
 output "context" {
-  description = "The output context that can be passed around with other lables. The root context can be accessed with: \"module.this.context\"."
+  description = "The output context that can be passed around with other labels. The root context can be accessed with: \"module.this.context\"."
   value       = local.input
 }
 

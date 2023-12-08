@@ -2,7 +2,11 @@ variable "context" {
   description = "A \"context\" object to pass around between modules. The \"this\" module contains the \"root context\" which can be updated by other labels using \"module.this.context\"."
   type        = any
   default     = {
-    enabled = true
+    delimiter = null
+    enabled   = true
+    env       = null
+    namespace = null
+    team      = null
   }
 }
 

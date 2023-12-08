@@ -16,13 +16,13 @@ locals {
   }
 
   input = {
-    delimiter  = try(var.context.delimiter, var.delimiter)
+    delimiter  = coalesce(var.delimiter, var.context.delimiter)
     enabled    = var.enabled ? var.context.enabled : var.enabled
-    env        = try(var.env, var.context.env, "")
+    env        = var.env == null ? var.context.env : var.env
     id         = try(var.id, var.context.id, "")
-    namespace  = try(var.context.namespace, var.namespace, "")
+    namespace  = coalesce(var.namespace, var.context.namespace, "")
     region     = var.region != null ? lookup(local.regions, var.region) : try(var.context.region, null)
     tags       = merge(try(var.context.tags, {}), try(var.tags, {}))
-    team       = try(var.context.team, var.team, "")
+    team       = try(var.team, var.context.team, "")
   }
 }

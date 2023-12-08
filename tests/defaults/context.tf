@@ -5,9 +5,10 @@ module "this" {
   namespace = "ecs"
 
   tags = {
-    Account     = "QA"
+    Account     = "Development"
     Cost-Center = "Engineering"
     Domain      = "Containers"
+    Environment = "Sandbox"
     Project     = "Goldenrod"
   }
 }
