@@ -166,9 +166,9 @@ this = {
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-| Name | Version            |
-|------|--------------------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | \>= 1.5.0, < 2.0.0 |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.5.0, < 2.0.0 |
 
 ## Providers
 
@@ -206,6 +206,7 @@ No resources.
 | <a name="output_enabled"></a> [enabled](#output\_enabled) | Enable / disable labels or the root module as a whole. |
 | <a name="output_id"></a> [id](#output\_id) | The id for the resource(s) as configured by the label. |
 | <a name="output_id_full"></a> [id\_full](#output\_id\_full) | The full id for the resource(s) as configured by the label; includes any labels included in "var.label\_order". |
+| <a name="output_namespace"></a> [namespace](#output\_namespace) | The appropriate namespace for the resource(s). |
 | <a name="output_region"></a> [region](#output\_region) | The AWS region to deploy resources into. |
 | <a name="output_tags"></a> [tags](#output\_tags) | The tags compiled by the label. |
 <!-- END_TF_DOCS -->

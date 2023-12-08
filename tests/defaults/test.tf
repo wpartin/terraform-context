@@ -10,11 +10,11 @@ module "service" {
   source = "./modules/ecs-service"
 
   cluster            = aws_ecs_cluster.this[0].name
-  enabled            = module.ecs_service_label.context.enabled
+  enabled            = module.ecs_service_label.enabled
   enable_autoscaling = true
   family             = module.ecs_service_label.id
   name               = module.ecs_service_label.id_full
-  namespace          = module.ecs_service_label.context.namespace
+  namespace          = module.ecs_service_label.namespace
 
   tags    = module.ecs_service_label.context.tags
 }
