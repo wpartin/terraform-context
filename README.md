@@ -3,14 +3,13 @@
 ```hcl
 ### context.tf ###
 module "this" {
-  source = "..."
+  source = "../.."
 
-  enabled   = true
   env       = "sandbox"
   namespace = "ecs"
 
   tags = {
-    Account     = "QA"
+    Account     = "Development"
     Cost-Center = "Engineering"
     Domain      = "Containers"
     Environment = "Sandbox"
@@ -19,7 +18,7 @@ module "this" {
 }
 
 module "ecs_cluster_label" {
-  source = "..."
+  source = "../.."
 
   id     = "cluster"
   region = "global"
@@ -28,9 +27,8 @@ module "ecs_cluster_label" {
 }
 
 module "ecs_service_label" {
-  source = "..."
+  source = "../.."
 
-  enabled = false
   id     = "foxtrot"
   region = "us-east-2"
   team   = "butterfly"
@@ -54,21 +52,21 @@ resource "aws_ecs_cluster" "this" {
 module "service" {
   source = "./modules/ecs-service"
 
-  enabled            = module.ecs_service_label.context.enabled
+  enabled            = module.ecs_service_label.enabled
   enable_autoscaling = true
   family             = module.ecs_service_label.id
   name               = module.ecs_service_label.id_full
-  namespace          = module.ecs_service_label.context.namespace
+  namespace          = module.ecs_service_label.namespace
 
   tags    = module.ecs_service_label.context.tags
 }
 
 resource "aws_sqs_queue" "this" {
-  count = module.ecs_service_label.context.enabled ? 1 : 0
+  count = module.ecs_service_label.enabled ? 1 : 0
 
   name = replace(module.ecs_service_label.id_full, "ecs", "sqs")
 
-  tags = merge(module.ecs_service_label.context.tags, {
+  tags = merge(module.ecs_service_label.tags, {
     Domain = "SQS"
   })
 }
@@ -83,7 +81,7 @@ ecs_cluster_label = {
         namespace = "ecs"
         region    = "glb"
         tags      = {
-            Account     = "QA"
+            Account     = "Development"
             Cost-Center = "Engineering"
             Domain      = "Containers"
             Environment = "Sandbox"
@@ -96,7 +94,7 @@ ecs_cluster_label = {
     id_full = "sandbox-glb-ecs-cluster"
     region  = "global"
     tags    = {
-        Account     = "QA"
+        Account     = "Development"
         Cost-Center = "Engineering"
         Domain      = "Containers"
         Environment = "Sandbox"
@@ -139,7 +137,7 @@ this = {
         env       = "sandbox"
         id        = null
         namespace = "ecs"
-        region    = ""
+        region    = null
         tags      = {
             Account     = "Development"
             Cost-Center = "Engineering"

@@ -1,9 +1,9 @@
 resource "aws_ecs_cluster" "this" {
-  count = module.ecs_cluster_label.context.enabled ? 1 : 0
+  count = module.ecs_cluster_label.enabled ? 1 : 0
 
   name = module.ecs_cluster_label.id_full
 
-  tags = module.ecs_cluster_label.context.tags
+  tags = module.ecs_cluster_label.tags
 }
 
 module "service" {
@@ -16,15 +16,15 @@ module "service" {
   name               = module.ecs_service_label.id_full
   namespace          = module.ecs_service_label.namespace
 
-  tags    = module.ecs_service_label.context.tags
+  tags    = module.ecs_service_label.tags
 }
 
 resource "aws_sqs_queue" "this" {
-  count = module.ecs_service_label.context.enabled ? 1 : 0
+  count = module.ecs_service_label.enabled ? 1 : 0
 
   name = replace(module.ecs_service_label.id_full, "ecs", "sqs")
 
-  tags = merge(module.ecs_service_label.context.tags, {
+  tags = merge(module.ecs_service_label.tags, {
     Domain = "SQS"
   })
 }
