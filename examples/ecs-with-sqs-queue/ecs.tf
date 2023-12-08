@@ -7,7 +7,7 @@ resource "aws_ecs_cluster" "this" {
 }
 
 module "service" {
-  source = "./modules/ecs-service"
+  source = "../modules/ecs-service"
 
   cluster            = aws_ecs_cluster.this[0].name
   enabled            = module.ecs_service_label.enabled
@@ -17,26 +17,4 @@ module "service" {
   namespace          = module.ecs_service_label.namespace
 
   tags    = module.ecs_service_label.tags
-}
-
-resource "aws_sqs_queue" "this" {
-  count = module.ecs_service_label.enabled ? 1 : 0
-
-  name = replace(module.ecs_service_label.id_full, "ecs", "sqs")
-
-  tags = merge(module.ecs_service_label.tags, {
-    Domain = "SQS"
-  })
-}
-
-output "this" {
-  value = module.this
-}
-
-output "ecs_cluster_label" {
-  value = module.ecs_cluster_label
-}
-
-output "ecs_service_label" {
-  value = module.ecs_service_label
 }

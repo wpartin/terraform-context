@@ -45,7 +45,7 @@ module "ecs_service_label" {
   })
 }
 
-### test.tf ###
+### ecs.tf ###
 resource "aws_ecs_cluster" "this" {
   count = module.ecs_cluster_label.enabled ? 1 : 0
 
@@ -66,6 +66,7 @@ module "service" {
   tags    = module.ecs_service_label.tags
 }
 
+### sqs.tf ###
 resource "aws_sqs_queue" "this" {
   count = module.ecs_service_label.enabled ? 1 : 0
 
