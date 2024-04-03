@@ -1,37 +1,24 @@
-module "this" {
+module "context" {
   source = "../.."
 
-  env       = "sandbox"
-  namespace = "ecs"
+  environment = "testing"
+  namespace   = "ecs"
+
+  labels = {
+    ecs_cluster = {
+      id     = "cluster"
+      region = "global"
+    }
+    ecs_service = {
+      id     = "foxtrot"
+      region = "us-east-2"
+      unit   = "butterfly"
+    }
+  }
 
   tags = {
-    Account     = "Development"
-    Cost-Center = "Engineering"
-    Domain      = "Containers"
-    Environment = "Sandbox"
-    Project     = "Goldenrod"
+    IsTerraformed = true
+    Environment   = "Testing"
+    Unit          = "Containers"
   }
-}
-
-module "ecs_cluster_label" {
-  source = "../.."
-
-  id     = "cluster"
-  region = "global"
-
-  context = module.this.context
-}
-
-module "ecs_service_label" {
-  source = "../.."
-
-  id     = "foxtrot"
-  region = "us-east-2"
-  team   = "butterfly"
-
-  context = module.this.context
-
-  tags = merge(module.this.tags, {
-    Cost-Center = "BugsLife"
-  })
 }

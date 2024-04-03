@@ -1,20 +1,28 @@
 resource "aws_ecs_cluster" "this" {
-  count = module.ecs_cluster_label.enabled ? 1 : 0
+  for_each = { for label, attributes in module.context.labels : attributes.id_full => attributes if attributes.enabled && label == "ecs_cluster" }
 
-  name = module.ecs_cluster_label.id_full
+  name = each.key
 
-  tags = module.ecs_cluster_label.tags
+  tags = each.value.tags
 }
 
-module "service" {
+module "ecs_service" {
   source = "../modules/ecs-service"
 
-  cluster            = aws_ecs_cluster.this[0].name
-  enabled            = module.ecs_service_label.enabled
-  enable_autoscaling = true
-  family             = module.ecs_service_label.id
-  name               = module.ecs_service_label.id_full
-  namespace          = module.ecs_service_label.namespace
+  for_each = { for label, attributes in module.context.labels : attributes.id_full => attributes if attributes.enabled && label == "ecs_service" }
 
-  tags    = module.ecs_service_label.tags
+  cluster            = coalesce(var.cluster, lookup(aws_ecs_cluster.this, module.context.labels.ecs_cluster.id_full).name)
+  enabled            = each.value.enabled
+  enable_autoscaling = true
+  family             = each.value.id
+  name               = each.value.id_full
+  namespace          = each.value.namespace
+
+  tags = each.value.tags
+}
+
+variable "cluster" {
+  description = "The ECS cluster identifier."
+  type        = string
+  default     = null
 }

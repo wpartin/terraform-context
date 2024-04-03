@@ -1,9 +1,9 @@
 resource "aws_sqs_queue" "this" {
-  count = module.ecs_service_label.enabled ? 1 : 0
+  for_each = { for label, attributes in module.context.labels : replace(attributes.id_full, "ecs", "sqs") => attributes if attributes.enabled && label == "ecs_service" }
 
-  name = replace(module.ecs_service_label.id_full, "ecs", "sqs")
+  name = each.key
 
-  tags = merge(module.ecs_service_label.tags, {
+  tags = merge(module.context.labels.ecs_service.tags, {
     Domain = "SQS"
   })
 }

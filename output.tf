@@ -1,11 +1,16 @@
-output "context" {
-  description = "The output context that can be passed around with other labels. The root context can be accessed with: \"module.this.context\"."
-  value       = local.input
+output "delimiter" {
+  description = "The delimiter selected."
+  value       = var.delimiter
 }
 
 output "enabled" {
   description = "Enable / disable labels or the root module as a whole."
-  value       = local.input.enabled
+  value       = var.enabled
+}
+
+output "environment" {
+  description = "The environment selected."
+  value       = var.environment
 }
 
 output "id" {
@@ -13,14 +18,14 @@ output "id" {
   value       = var.id
 }
 
-output "id_full" {
-  description = "The full id for the resource(s) as configured by the label; includes any labels included in \"var.label_order\"."
-  value       = local.id_full
+output "labels" {
+  description = "value"
+  value       = local.finalized_labels
 }
 
 output "namespace" {
   description = "The appropriate namespace for the resource(s)."
-  value       = local.input.namespace
+  value       = var.namespace
 }
 
 output "region" {
@@ -30,5 +35,5 @@ output "region" {
 
 output "tags" {
   description = "The tags compiled by the label."
-  value       = local.input.tags
+  value       = var.tags
 }

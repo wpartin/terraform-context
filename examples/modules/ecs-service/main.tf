@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "this" {
           hostPort      = 80
         }
       ]
-    }])
+  }])
   family = var.family
 
   tags = var.tags
